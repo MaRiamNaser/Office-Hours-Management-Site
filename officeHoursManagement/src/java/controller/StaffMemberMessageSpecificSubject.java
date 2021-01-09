@@ -28,37 +28,62 @@ import model.Message;
 @WebServlet(name = "StaffMemberMessageSpecificSubject", urlPatterns = {"/StaffMemberMessageSpecificSubject"})
 public class StaffMemberMessageSpecificSubject extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+
     DaoViewStaffMemberMessages daoViewStaffMemberMessages = new DaoViewStaffMemberMessages();
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            String subjectName = request.getParameter("subjectName");
+            String subjectName = request.getParameter("subjectName");  //The problem is still existed
             boolean flag = false;
-            ResultSet RS = daoViewStaffMemberMessages.selectColumns();
+            
+            ResultSet RS = daoViewStaffMemberMessages.selectStaffColumns();
             try {
+              
                 while(RS.next())
                 {
+                    System.out.println("SubjectName "+ RS.getString("subjectName") + " " +subjectName);
                     if(RS.getString("subjectName").equals(subjectName))
                     {
-                        flag = true;
-                        String message = request.getParameter("message1");
                         String email = request.getSession().getAttribute("email").toString();
                         String fromID = daoViewStaffMemberMessages.getStaffMemberID(email);
+                        String subjectNameTmp = daoViewStaffMemberMessages.getSpecificSubjectName(fromID);
+                        flag = true;
+                        if(subjectNameTmp.equals(subjectName)){
+                            
+                        String message = request.getParameter("message1");
+                        
+                   
+                        System.out.println("Email " + email);
+                        
+                         System.out.println("FromId " + fromID);
                         ArrayList<String>toIDs =new ArrayList<>();
                                 toIDs = daoViewStaffMemberMessages.getSpecificSubjectToIDs(subjectName,fromID);
                         LocalDate date = LocalDate.now(); 
                          Message messg;
+                         
+                        if(toIDs.size() == 0)
+                        {
+                            String htmlRespone = "<html>";
+                            htmlRespone += "<body>";
+                            htmlRespone += "<br><br><h3>You can't send message !!!" + "</h3>";
+                            htmlRespone += "</body>";
+                            htmlRespone += "</html>";
+
+                            out.println(htmlRespone);
+                            
+                        }
+                        else
+                        {
+                           String htmlRespone = "<html>";
+                           htmlRespone += "<body>";
+                           htmlRespone += "<br><br><h3>You have sent message successfully" + "</h3>";
+                           htmlRespone += "</body>";
+                           htmlRespone += "</html>";
+
+                           out.println(htmlRespone); 
+                        }
                         for(int i = 0; i < toIDs.size(); i++)
                         {
                             messg = new Message();
@@ -68,13 +93,18 @@ public class StaffMemberMessageSpecificSubject extends HttpServlet {
                             messg.setDate(date);
                            daoViewStaffMemberMessages.insertMessage(messg);
                         }
-                       String htmlRespone = "<html>";
-                       htmlRespone += "<body>";
-                       htmlRespone += "<br><br><h3>You have sent message successfully" + "</h3>";
-                       htmlRespone += "</body>";
-                       htmlRespone += "</html>";
-
-                       out.println(htmlRespone);
+                       
+                    }
+                        else
+                        {
+                            String htmlRespone = "<html>";
+                            htmlRespone += "<body>";
+                            htmlRespone += "<br><br><h3>You can't send message As you aren't staffmember of this subject!!!" + "</h3>";
+                            htmlRespone += "</body>";
+                            htmlRespone += "</html>";
+                        
+                            out.println(htmlRespone);
+                        }
                     }
                     if(flag == true)
                     {
@@ -92,6 +122,7 @@ public class StaffMemberMessageSpecificSubject extends HttpServlet {
                         out.println(htmlRespone);
                 }
             } catch (Exception ex) {
+                System.out.println("ssssssssssssss");
                  System.out.print("###################Error in data base:" + ex);
             }
         }
