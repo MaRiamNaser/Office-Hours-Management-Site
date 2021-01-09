@@ -21,7 +21,38 @@ public class DaoViewStaffMemberMessages {
     DBConnection dBConnection = new DBConnection();
     Connection Con = null;
     Statement Stmt = null;
+    public String getSpecificSubjectName(String userID)
+    {
+        dBConnection = new DBConnection();
+        String query = "";
+        ResultSet RS = null;
+        ArrayList<String>IDs = new ArrayList<>();
+        String subjectName = "";
 
+        try {
+            System.out.println("Tmmmmmmmmmamm");
+            query = "select subjectName from user where userID = '" + userID + "';";
+            Connection Con = dBConnection.getConnection();
+            Statement Stmt = dBConnection.getStatement();
+
+            RS = Stmt.executeQuery(query);
+            if(RS != null){
+            while (RS.next()) {
+               
+                subjectName = RS.getString("subjectName");
+              
+            }
+            }
+            Stmt.close();
+            Con.close();
+            
+        } catch (Exception e) {
+            System.out.print("###################Error in data base:" + e);
+
+        }
+        return subjectName;
+        
+    }
     public ArrayList<String> getSpecificSubjectToIDs(String subjectName , String fromID)
     {
         dBConnection = new DBConnection();
@@ -31,16 +62,18 @@ public class DaoViewStaffMemberMessages {
         String ID = "";
 
         try {
-
+            System.out.println("Tmmmmmmmmmamm");
             query = "select userID from user where subjectName = '" + subjectName + "'and userID <> '"+fromID+"';";
             Connection Con = dBConnection.getConnection();
             Statement Stmt = dBConnection.getStatement();
 
             RS = Stmt.executeQuery(query);
+            if(RS != null){
             while (RS.next()) {
                
                 ID = RS.getString("userID");
                 IDs.add(ID);
+            }
             }
             Stmt.close();
             Con.close();
@@ -49,6 +82,7 @@ public class DaoViewStaffMemberMessages {
             System.out.print("###################Error in data base:" + e);
 
         }
+         System.out.print("###################IDS: " + IDs);
         return IDs;
         
     }
@@ -190,21 +224,45 @@ public class DaoViewStaffMemberMessages {
 
         try {
 
-            query = "select displayName,subjectName,type from user ;";
+            query = "select displayName,subjectName,type from user;";
             Con = dBConnection.getConnection();
             Stmt = dBConnection.getStatement();
 
             RS = Stmt.executeQuery(query);
 
+            
             //Stmt.close();
             // Con.close();
         } catch (Exception e) {
-            System.out.print("###################Error in data base:" + e);
+            System.out.print("###################*** Error in data base:" + e);
 
         }
         return RS;
     }
 
+     
+    public ResultSet selectStaffColumns() {
+        dBConnection = new DBConnection();
+        String query = "";
+        ResultSet RS = null;
+
+        try {
+
+            query = "select displayName,subjectName,type from user where type <> 'student';";
+            Con = dBConnection.getConnection();
+            Stmt = dBConnection.getStatement();
+
+            RS = Stmt.executeQuery(query);
+
+            
+            //Stmt.close();
+            // Con.close();
+        } catch (Exception e) {
+            System.out.print("###################*** Error in data base:" + e);
+
+        }
+        return RS;
+    }
     public void closeConnection() {
         try {
             Stmt.close();
