@@ -4,6 +4,9 @@
     Author     : ME
 --%>
 
+<%@page import="dao.DaoFilteration"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="dao.DaoViewStaffMemberMessages"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="dao.DaoOfficeHoursTable"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -27,14 +30,21 @@
                               <div class="inputs">
                                 <input list="From Time-To Time" placeholder="From Time-To Time "name="time" autofocus required /> 
                                 <%
+                                    DaoViewStaffMemberMessages daoViewStaffMemberMessages = new DaoViewStaffMemberMessages();
                                     DaoOfficeHoursTable daoOfficeHoursTable = new DaoOfficeHoursTable();
+                                    DaoFilteration daoFilteration = new DaoFilteration();
+                                    String email = request.getSession().getAttribute("email").toString();
+                                    String staffMemberID = daoViewStaffMemberMessages.getStaffMemberID(email);
                                     ResultSet RS1 = null;
-                                    RS1 = daoOfficeHoursTable.selectAllData();%>
+                                    RS1 = daoOfficeHoursTable.getSpecificSlots(staffMemberID);%>
                                     <datalist id = "From Time-To Time">
-                                <%while(RS1.next())
-                                    {%>
-                                    <option value=<%= RS1.getString("fromTime")%>-<%=RS1.getString("toTime")%> >
-                                   <% }
+                                    <%ArrayList Times = new ArrayList();
+                                    Times = daoFilteration.filterTimes(RS1);
+                       
+                                    for(int i = 0; i < Times.size();i++){
+                                    %>
+                                         <option value=<%= Times.get(i)%> >
+                                    <% }
                                    daoOfficeHoursTable.closeConnection();
                                    %>
                                     </datalist>
