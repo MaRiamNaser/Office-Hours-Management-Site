@@ -1,5 +1,7 @@
 
 
+<%@page import="java.sql.ResultSet"%>
+<%@page import="dao.DoaEditStaffMemberProfile"%>
 <%@page import="dao.DaoOfficeHoursTable"%>
 <%@page import="dao.DaoViewStaffMemberMessages"%>
 <%@page import="model.OfficeHours"%>
@@ -58,7 +60,24 @@
         
         <div class="container">
 
-            <form class = "form_submit" id="signup" action="<%=request.getContextPath()%>/EditStaffMemberProfile" id="my_captcha_form" method="POST">
+            <form class = "form_submit" id="signup" action="<%=request.getContextPath()%>/EditStaffMemberProfile" method="POST">
+                 <%
+            DoaEditStaffMemberProfile doaEditStaffMemberProfile = new DoaEditStaffMemberProfile();
+            ResultSet RS = null;
+            String email = request.getSession().getAttribute("email").toString();
+            RS = doaEditStaffMemberProfile.selectAllData(email);
+            String userName = "",displayName = "",email1 = "",password = "",subject = "",type = "";
+            while(RS.next()){
+                 userName =  RS.getString("userName");
+                 displayName = RS.getString("displayName");
+                 email1 =  RS.getString("email");
+                 password =  RS.getString("password");
+                 subject =  RS.getString("subjectName");
+                 type =  RS.getString("type");
+            }
+            doaEditStaffMemberProfile.closeConnection();
+            //System.out.println("Name" + userName);
+        %>
 
                 <div class="header">
 
@@ -70,15 +89,15 @@
 
                 <div class="inputs">
 
-                    <input type="text" placeholder="user name" name="userName" autofocus disabled/>
+                    <input type="text" placeholder="user name" name="userName" autofocus disabled value=<%= userName%> />
 
-                    <input id="displayName" type="text" placeholder="Display Name"name="displayName" oninput="ajaxDiplayName()"/>  
+                    <input id="displayName" type="text" placeholder="Display Name"name="displayName" oninput="ajaxDiplayName()" value=<%= displayName%>  />  
                     <div id="error1" class="error1" hidden ></div>
-                    <input id="email" type="email" placeholder="e-mail"  name="email" oninput="ajaxEmail()" />
+                    <input id="email" type="email" placeholder="e-mail"  name="email" oninput="ajaxEmail()" value=<%=email1%> />
                     <div id="error2" class="error2" hidden></div>
-                    <input type="password" placeholder="Password"name="password"/>   
-                    <input type="text" placeholder="Subject"name="subject" />   
-                    <input type="text" placeholder="Dr/TA"name="type" />
+                    <input type="text" placeholder="Password"name="password" value=<%= password%> />   
+                    <input type="text" placeholder="Subject"name="subject" value=<%= subject%> />   
+                    <input type="text" placeholder="Dr/TA"name="type" value=<%=type%> />
 
                     <input  id="submit" type="submit" value="Edit Profile">
 
@@ -89,7 +108,7 @@
             </form>
             <br><br>
             
-            <form id="signup" action="<%=request.getContextPath()%>/staffMemberViewMessages.jsp" id="my_captcha_form" method="GET">
+            <form id="signup" action="<%=request.getContextPath()%>/staffMemberViewMessages.jsp" method="GET">
                  <div class="header">
 
                     <h3> Reply to & View Your Messages </h3>
@@ -103,7 +122,7 @@
                 </div>
             </form>
                 <br>
-            <form id="signup" action="<%=request.getContextPath()%>/StaffMemberMessageSpecificUser" id="my_captcha_form" method="GET">
+            <form id="signup" action="<%=request.getContextPath()%>/StaffMemberMessageSpecificUser"  method="GET">
                  <div class="header">
 
                     <h3> Message Specific User </h3>
@@ -113,13 +132,25 @@
                 <div class="sep"></div>
 
                 <div class="inputs">
-                    <input type="text" placeholder="Display Name"name="displayName" autofocus required />    
+                    <input list="displayNames" placeholder="Display Name" name="displayName" autofocus required />
+                    <%
+                        DaoViewStaffMemberMessages daoViewStaffMemberMessages = new DaoViewStaffMemberMessages();
+                        ResultSet RS1 = null;
+                        RS1 = daoViewStaffMemberMessages.selectColumns();%>
+                        <datalist id = "displayNames">
+                    <%while(RS1.next())
+                        {%>
+                        <option value=<%= RS1.getString("displayName")%> >
+                       <% }
+                       daoViewStaffMemberMessages.closeConnection();
+                       %>
+                        </datalist>
                     <input type="text" placeholder="Message"name="message1" required/>    
                     <input id="submit" type="submit" value="Send Message">
                 </div>    
             </form>
                 <br>
-            <form id="signup" action="<%=request.getContextPath()%>/StaffMemberMessageSpecificSubject" id="my_captcha_form" method="GET">
+            <form id="signup" action="<%=request.getContextPath()%>/StaffMemberMessageSpecificSubject"  method="GET">
                  <div class="header">
 
                     <h3> Message Staff Member </h3>
@@ -129,13 +160,26 @@
                 <div class="sep"></div>
 
                 <div class="inputs">
-                    <input type="text" placeholder="Subject Name"name="subjectName" autofocus required /> 
+                    <input list="subjectNames" placeholder="Subject Name" name="subjectName" autofocus required />
+                    <%
+                       daoViewStaffMemberMessages = new DaoViewStaffMemberMessages();
+                         RS1 = null;
+                        RS1 = daoViewStaffMemberMessages.selectStaffColumns();%>
+                        <datalist id = "subjectNames">
+                    <%while(RS1.next())
+                        {%>
+                        <option value=<%= RS1.getString("subjectName")%> >
+                       <% }
+                       daoViewStaffMemberMessages.closeConnection();
+                       %>
+                        </datalist>
+                   <!-- <input type="text" placeholder="Subject Name"name="subjectName" autofocus required /> -->
                     <input type="text" placeholder="Message"name="message1" required/>    
                     <input id="submit" type="submit" value="Send Message">
                 </div>
             </form>
                 <br>
-            <form id="signup" action="<%=request.getContextPath()%>/view_student_details.jsp" id="my_captcha_form" method="GET">
+            <form id="signup" action="<%=request.getContextPath()%>/view_student_details.jsp" method="GET">
                  <div class="header">
 
                     <h3> View Student Details </h3>
@@ -145,12 +189,25 @@
                 <div class="sep"></div>
 
                 <div class="inputs">
-                    <input type="text" placeholder="Display Name"name="displayName" autofocus required/> 
+                     <input list="displayNames" placeholder="Display Name" name="displayName" autofocus required />
+                    <%
+                        daoViewStaffMemberMessages = new DaoViewStaffMemberMessages();
+                        RS1 = null;
+                        RS1 = daoViewStaffMemberMessages.selectColumns();%>
+                        <datalist id = "displayNames">
+                    <%while(RS1.next())
+                        {%>
+                        <option value=<%= RS1.getString("displayName")%> >
+                       <% }
+                       daoViewStaffMemberMessages.closeConnection();
+                       %>
+                        </datalist>
+                    <!--<input type="text" placeholder="Display Name"name="displayName" autofocus required/> -->
                     <input id="submit" type="submit" value="Search">
                 </div>
             </form>
                 <br>
-            <form id="signup" action="<%=request.getContextPath()%>/view_reservations.jsp" id="my_captcha_form" method="GET">
+            <form id="signup" action="<%=request.getContextPath()%>/view_reservations.jsp" method="GET">
                  <div class="header">
 
                     <h3> View Reservations </h3>
@@ -160,13 +217,38 @@
                 <div class="sep"></div>
 
                 <div class="inputs">
-                    <input type="text" placeholder="From Time-To Time "name="time" autofocus required /> 
-                    <input type="text" placeholder="Date"name="date" required/>    
+                    <input list="From Time-To Time" placeholder="From Time-To Time "name="time" autofocus required /> 
+                    <%
+                        DaoOfficeHoursTable daoOfficeHoursTable = new DaoOfficeHoursTable();
+                        RS1 = null;
+                        RS1 = daoOfficeHoursTable.selectAllData();%>
+                        <datalist id = "From Time-To Time">
+                    <%while(RS1.next())
+                        {%>
+                        <option value=<%= RS1.getString("fromTime")%>-<%=RS1.getString("toTime")%> >
+                       <% }
+                       daoOfficeHoursTable.closeConnection();
+                       %>
+                        </datalist>
+                    <input list="dates" placeholder="Date "name="date" autofocus required /> 
+                    <%
+                         daoOfficeHoursTable = new DaoOfficeHoursTable();
+                        RS1 = null;
+                        RS1 = daoOfficeHoursTable.selectAllData();%>
+                        <datalist id = "dates">
+                    <%while(RS1.next())
+                        {%>
+                        <option value=<%= RS1.getString("date")%> >
+                       <% }
+                       daoOfficeHoursTable.closeConnection();
+                       %>
+                        </datalist> 
                     <input id="submit" type="submit" value="View Reservations">
                 </div>
             </form>
                 <br>
-              <form id="signup" action="<%=request.getContextPath()%>/cancel_reservations.jsp" id="my_captcha_form" method="GET">
+               
+              <form id="signup" action="<%=request.getContextPath()%>/cancel_reservations.jsp" method="GET">
                    <div class="header">
 
                     <h3> Cancel Reservations </h3>
@@ -176,14 +258,14 @@
                 <div class="sep"></div>
 
                 <div class="inputs">
-                  <input type="checkbox" name="slot" autofocus /> Cancel Specific Slot Reservations <br>
-                  <input type="checkbox" name="date" autofocus /> Cancel Specific Day Reservations <br>
+                  <input type="checkbox" name="slot"  /> Cancel Specific Slot Reservations 
+                  <input type="checkbox" name="date" autofocus /> Cancel Specific Day Reservations 
                   <input id = "checkBtn1" id="submit" type="submit" value="Submit">
                 </div>
             </form>
                 
             
-            <form id="signup" action="<%=request.getContextPath()%>/view_reservation_history.jsp" id="my_captcha_form" method="GET">
+            <form id="signup" action="<%=request.getContextPath()%>/view_reservation_history.jsp" method="GET">
                  <div class="header">
 
                     <h3> View Reservation History </h3>
@@ -198,7 +280,7 @@
                     <input id = "checkBtn2" id="submit" type="submit" value="Submit">
                 </div>
             </form>
-            <form id="signup" action="<%=request.getContextPath()%>/office_hours_forms.jsp" id="my_captcha_form" method="GET">
+            <form id="signup" action="<%=request.getContextPath()%>/office_hours_forms.jsp" method="GET">
                  <div class="header">
 
                     <h3> Office Hours Management </h3>
