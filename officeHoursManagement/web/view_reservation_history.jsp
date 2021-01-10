@@ -4,6 +4,8 @@
     Author     : ME
 --%>
 
+<%@page import="java.sql.ResultSet"%>
+<%@page import="dao.DaoOfficeHoursTable"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -23,7 +25,19 @@
                             </div>
                       <div class="sep"></div>
                               <div class="inputs">
-                                <input type="text" placeholder="From Time-To Time" name="slot1"  autofocus/>   <br>
+                                <input list="From Time-To Time" placeholder="From Time-To Time "name="time" autofocus required /> 
+                                <%
+                                    DaoOfficeHoursTable daoOfficeHoursTable = new DaoOfficeHoursTable();
+                                    ResultSet RS1 = null;
+                                    RS1 = daoOfficeHoursTable.selectAllData();%>
+                                    <datalist id = "From Time-To Time">
+                                <%while(RS1.next())
+                                    {%>
+                                    <option value=<%= RS1.getString("fromTime")%>-<%=RS1.getString("toTime")%> >
+                                   <% }
+                                   daoOfficeHoursTable.closeConnection();
+                                   %>
+                                    </datalist>
                                 <input id="submit" name = "button1" type="submit" value="View History of Reservations"><br>
                              </div>
                         </form> 
