@@ -28,14 +28,22 @@
 
                 <div class="inputs">
 
-                    <input type="text" placeholder="From Time (HH:MM) " name="fromTime" autofocus required/><br>
+                    <input id="fromTime" type="text" placeholder="From Time (HH:MM) " name="fromTime" autofocus required/><br>
 
-                    <input type="text" placeholder="To Time (HH:MM)" name="toTime" required /><br>  
-                    <input type="text" placeholder="Date (YYYY-MM-DD)"  name="date" required/><br>
-                    <input type="text" placeholder="State(offline/online)" name="state" required/><br>   
-                    <input type="text" placeholder="Location" name="location"required  /><br>   
+                    <input id="toTime" type="text" placeholder="To Time (HH:MM)" name="toTime" required /><br>  
+                    <input id="date" type="text" placeholder="Date (YYYY-MM-DD)"  name="date" required /><br>
+                    <div id="error3" class="error3" hidden></div>
+                    <select name="state" >
+                        
+                            <option value="offline"> Offline </option>
+                            <option value="online"> Online </option>
+                            
+                    </select> 
+                    <!--<input type="text" placeholder="State(offline/online)" name="state" required/><br>   -->
+                    <input type="text" placeholder="Location" name="location"required  /><br> 
+                    
                     <!--<input type="text" placeholder="Dr/TA ID" name="userID" required /><br>-->
-                    <input id="submit" name = "button1" type="submit" value="Insert"><br>
+                    <input id="submit" name = "button1" type="submit" value="Insert" onclick="ajaxSlot()"><br>
                 </div>
                     
                 </form> 
@@ -54,10 +62,17 @@
 
                 <div class="inputs">
                     <input type="text" placeholder="OfficeHours ID" name="officeHoursID" required /><br>
-                    <input type="text" placeholder="From Time (HH:MM) " name="fromTime" autofocus required/><br>
-                    <input type="text" placeholder="To Time (HH:MM)" name="toTime" required /><br>  
-                    <input type="text" placeholder="Date (YYYY-MM-DD)"  name="date" required/><br>
-                    <input type="text" placeholder="State(offline/online)" name="state" required/> <br>  
+                    <input id ="fromTime" type="text" placeholder="From Time (HH:MM) " name="fromTime" autofocus required/><br>
+                    <input id = "toTime" type="text" placeholder="To Time (HH:MM)" name="toTime" required /><br>  
+                    <input id = "date" type="text" placeholder="Date (YYYY-MM-DD)"  name="date" required oninput="ajaxSlot()"/><br>
+                    <div id="error4" class="error4"></div>
+                    <!--<input type="text" placeholder="State(offline/online)" name="state" required/> <br>  -->
+                     <select name="state" >
+                        
+                            <option value="offline"> Offline </option>
+                            <option value="online"> Online </option>
+                            
+                    </select> 
                     <input type="text" placeholder="Location" name="location"required  />  <br> 
                    <!-- <input type="text" placeholder="Dr/TA ID" name="userID" required /><br>-->
                     <input id="submit" name = "button2" type="submit" value="Update"><br>
@@ -102,5 +117,6 @@
 
 
         %>
+        <script src="javascriptValidation.js"></script>
     </body>
 </html>
