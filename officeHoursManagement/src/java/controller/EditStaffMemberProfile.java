@@ -62,14 +62,6 @@ public class EditStaffMemberProfile extends HttpServlet {
            String subject = request.getParameter("subject");
            String type = request.getParameter("type");
            
-           
-           List<String> namesList = Arrays.asList( "displayName", "email", "type","password","subjectName");
-           List<String> valuesList = Arrays.asList(displayName, email, type,password,subject);
-           ArrayList<String>parametersNames = new ArrayList<>();
-           parametersNames.addAll(namesList);
-           ArrayList<String>parametersValues = new ArrayList<>();
-           parametersValues.addAll(valuesList);
-           
            User user = new User();
            user.setUserDisplayName(displayName);
            user.setUserEmail(email);
@@ -84,7 +76,7 @@ public class EditStaffMemberProfile extends HttpServlet {
            user.setUserType(type);
            user.setUserPassword(password);
            user.setUserSubject(subject);
-           doaEditStaffMemberProfile.editProfile(user, ID, parametersNames, parametersValues);
+           doaEditStaffMemberProfile.editProfile(user, ID);
            String htmlRespone = "<html>";
            htmlRespone += "<body>";
            htmlRespone += "<br><br><h3>You edit your profile successfully" + "</h3>";
