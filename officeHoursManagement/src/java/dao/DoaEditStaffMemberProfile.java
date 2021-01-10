@@ -17,6 +17,8 @@ import model.User;
 public class DoaEditStaffMemberProfile {
 
     DBConnection dBConnection;
+    Connection Con = null;
+    Statement Stmt = null;
 
     public String defineID(String email) {
         dBConnection = new DBConnection();
@@ -43,7 +45,7 @@ public class DoaEditStaffMemberProfile {
         return ID;
     }
 
-    public void editProfile(User user, String ID, ArrayList<String> parametersNames, ArrayList<String> parametersValues) {
+    public void editProfile(User user, String ID) {
         dBConnection = new DBConnection();
         String query = "";
         ResultSet RS = null;
@@ -52,45 +54,45 @@ public class DoaEditStaffMemberProfile {
 
             Connection Con = dBConnection.getConnection();
             Statement Stmt = dBConnection.getStatement();
-
-            for (int i = 0; i < parametersNames.size(); i++) {
-                if (!parametersValues.get(i).equals("")) {
-                    System.out.println("NAmes "+parametersNames.get(i));
-                    if(parametersNames.get(i).equals("displayName"))
-                    {
-                        query = "update user set displayName = '" + parametersValues.get(i) + "' where userID = '"+ID+"';";
-                    }
-                    if(parametersNames.get(i).equals("email"))
-                    {
-                        query = "update user set email= '" + parametersValues.get(i) + "' where userID = '"+ID+"';";
-                    }
-                    if(parametersNames.get(i).equals("type"))
-                    {
-                        query = "update user set type = '" + parametersValues.get(i) + "' where userID = '"+ID+"';";
-                    }
-                    if(parametersNames.get(i).equals("password"))
-                    {
-                        query = "update user set password = '" + parametersValues.get(i) + "' where userID = '"+ID+"';";
-                    }
-                    if(parametersNames.get(i).equals("subjectName"))
-                    {
-                        query = "update user set subjectName = '" + parametersValues.get(i) + "' where userID = '"+ID+"';";
-                    }
-                    /*String qur1 = "DECLARE @tmp NVARCHAR(45);";
-                    boolean y = Stmt.execute(qur1);
-                    String qur = "set @tmp = '"+parametersNames.get(i)+"';";
-                    boolean x = Stmt.execute(qur);*/
-                    //query = "update user set '"+parametersNames.get(i)+"' = '" + parametersValues.get(i) + "' where userID = '"+ID+"';";
-                    int rows = Stmt.executeUpdate(query);
-                }
-            }
-
+            query = "update user set displayName = '" +user.getUserDisplayName()+ "' ,"
+                    + "email = '" +user.getUserEmail()+ "',"
+                    + "type = '" +user.getUserType()+ "',"
+                    + "password ='" +user.getUserPassword()+ "' ,"
+                    + "subjectName = '" +user.getUserSubject()+ "'where userID = '"+ID+"';";
+            int rows = Stmt.executeUpdate(query);
             Stmt.close();
             Con.close();
         } catch (Exception e) {
             System.out.print("###################Error in data base:" + e);
 
         }
+    }
+    public ResultSet selectAllData(String email)
+    {
+        dBConnection = new DBConnection();
+        String query = "";
+        ResultSet RS = null;
+        String ID = "";
+
+        try {
+
+            query = "select * from user where email =  '" + email + "';";
+             Con = dBConnection.getConnection();
+             Stmt = dBConnection.getStatement();
+
+            RS = Stmt.executeQuery(query);
+                       
+        } catch (Exception e) {
+            System.out.print("###################Error in data base:" + e);
+
+        }
+        return RS;
+        
+    }
+    public void closeConnection() throws SQLException
+    {
+         Stmt.close();
+         Con.close();
     }
 
 }
