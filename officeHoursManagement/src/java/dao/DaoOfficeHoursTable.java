@@ -262,6 +262,27 @@ public class DaoOfficeHoursTable {
         }
         return RS;
     }
+    public ResultSet getSpecificSlots(String staffMemberID)
+    {
+        dBConnection = new DBConnection();
+        String query = "";
+        ResultSet RS = null;
+        String fromUserID = "";
+
+        try {
+
+            query = "select fromTime,toTime,date from office_hours where userID =  '" + staffMemberID + "';";
+            Con = dBConnection.getConnection();
+            Stmt = dBConnection.getStatement();
+
+            RS = Stmt.executeQuery(query);
+            
+        } catch (Exception e) {
+            System.out.print("###################Error in data base:" + e);
+
+        }
+        return RS;
+    }
     public void closeConnection() {
         try {
             Stmt.close();
