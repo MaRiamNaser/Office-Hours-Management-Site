@@ -4,6 +4,8 @@
     Author     : ME
 --%>
 
+<%@page import="dao.DaoFilteration"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="dao.DaoOfficeHoursTable"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="dao.DaoViewOfficeHoursReservations"%>
@@ -17,6 +19,13 @@
         <title>Cancel Reservations</title>
     </head>
     <body>
+        <%
+            DaoViewStaffMemberMessages daoViewStaffMemberMessages = new DaoViewStaffMemberMessages();
+                        DaoOfficeHoursTable daoOfficeHoursTable = new DaoOfficeHoursTable();
+                        DaoFilteration daoFilteration = new DaoFilteration();
+                        String email = request.getSession().getAttribute("email").toString();
+                        String staffMemberID = daoViewStaffMemberMessages.getStaffMemberID(email);
+        %>
         <%
            
         if (request.getParameter("slot") != null) {%>
@@ -34,13 +43,18 @@
                 <div class="inputs">
                     <input list="From Time-To Time" placeholder="From Time-To Time "name="time" autofocus required /> 
                     <%
-                        DaoOfficeHoursTable daoOfficeHoursTable = new DaoOfficeHoursTable();
+                        
                         ResultSet RS1 = null;
-                        RS1 = daoOfficeHoursTable.selectAllData();%>
+                        RS1 = daoOfficeHoursTable.getSpecificSlots(staffMemberID);%>
                         <datalist id = "From Time-To Time">
-                    <%while(RS1.next())
-                        {%>
-                        <option value=<%= RS1.getString("fromTime")%>-<%=RS1.getString("toTime")%> >
+                    <%ArrayList Times = new ArrayList();
+                            Times = daoFilteration.filterTimes(RS1);
+                       
+                        for(int i = 0; i < Times.size();i++){
+                            
+                    %>
+                        
+                        <option value=<%= Times.get(i)%> >
                        <% }
                        daoOfficeHoursTable.closeConnection();
                        %>
@@ -49,11 +63,17 @@
                     <%
                          daoOfficeHoursTable = new DaoOfficeHoursTable();
                         RS1 = null;
-                        RS1 = daoOfficeHoursTable.selectAllData();%>
+                        RS1 = daoOfficeHoursTable.getSpecificSlots(staffMemberID);%>
                         <datalist id = "dates">
-                    <%while(RS1.next())
-                        {%>
-                        <option value=<%= RS1.getString("date")%> >
+                    <%ArrayList dates = new ArrayList();
+                        
+                        dates = daoFilteration.filterDates(RS1);
+                       
+                        for(int i = 0; i < dates.size();i++){
+                            
+                    %>
+                        
+                        <option value=<%= dates.get(i)%> >
                        <% }
                        daoOfficeHoursTable.closeConnection();
                        %>
@@ -79,13 +99,19 @@
                 <div class="inputs">
                    <input list="dates" placeholder="Date "name="date" autofocus required /> 
                     <%
-                       DaoOfficeHoursTable daoOfficeHoursTable = new DaoOfficeHoursTable();
                         ResultSet RS1 = null;
-                        RS1 = daoOfficeHoursTable.selectAllData();%>
+                        RS1 = daoOfficeHoursTable.getSpecificSlots(staffMemberID);%>
                         <datalist id = "dates">
-                    <%while(RS1.next())
-                        {%>
-                        <option value=<%= RS1.getString("date")%> >
+                    <%    
+                        ArrayList dates = new ArrayList();
+                        
+                        dates = daoFilteration.filterDates(RS1);
+                       
+                        for(int i = 0; i < dates.size();i++){
+                            
+                    %>
+                        
+                        <option value=<%= dates.get(i)%> >
                        <% }
                        daoOfficeHoursTable.closeConnection();
                        %>
