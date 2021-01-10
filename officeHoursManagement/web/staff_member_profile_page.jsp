@@ -1,5 +1,6 @@
 
 
+<%@page import="dao.DaoFilteration"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="dao.DoaEditStaffMemberProfile"%>
 <%@page import="dao.DaoOfficeHoursTable"%>
@@ -63,8 +64,10 @@
             <form class = "form_submit" id="signup" action="<%=request.getContextPath()%>/EditStaffMemberProfile" method="POST">
                  <%
             DoaEditStaffMemberProfile doaEditStaffMemberProfile = new DoaEditStaffMemberProfile();
+            DaoViewStaffMemberMessages daoViewStaffMemberMessages = new DaoViewStaffMemberMessages();
             ResultSet RS = null;
             String email = request.getSession().getAttribute("email").toString();
+            String staffMemberID = daoViewStaffMemberMessages.getStaffMemberID(email);
             RS = doaEditStaffMemberProfile.selectAllData(email);
             String userName = "",displayName = "",email1 = "",password = "",subject = "",type = "";
             while(RS.next()){
@@ -97,7 +100,18 @@
                     <div id="error2" class="error2" hidden></div>
                     <input type="text" placeholder="Password"name="password" value=<%= password%> />   
                     <input type="text" placeholder="Subject"name="subject" value=<%= subject%> />   
-                    <input type="text" placeholder="Dr/TA"name="type" value=<%=type%> />
+                    <select name="type" >
+                        <%if(type.equals("TA")){%>
+                            <option value="TA"> TA </option>
+                            <option value="Dr"> Dr </option>
+                            <%}
+                            else{%>
+                                <option value="Dr"> Dr </option>
+                                <option value="TA"> TA </option>
+                           <% }%>
+                    </select> 
+                         
+                    <!--<input type="text" placeholder="Dr/TA"name="type" value=<%=type%> />-->
 
                     <input  id="submit" type="submit" value="Edit Profile">
 
@@ -134,12 +148,13 @@
                 <div class="inputs">
                     <input list="displayNames" placeholder="Display Name" name="displayName" autofocus required />
                     <%
-                        DaoViewStaffMemberMessages daoViewStaffMemberMessages = new DaoViewStaffMemberMessages();
+                        daoViewStaffMemberMessages = new DaoViewStaffMemberMessages();
                         ResultSet RS1 = null;
                         RS1 = daoViewStaffMemberMessages.selectColumns();%>
                         <datalist id = "displayNames">
-                    <%while(RS1.next())
-                        {%>
+                    <%
+                        while(RS1.next())
+                        { %>
                         <option value=<%= RS1.getString("displayName")%> >
                        <% }
                        daoViewStaffMemberMessages.closeConnection();
@@ -166,10 +181,23 @@
                          RS1 = null;
                         RS1 = daoViewStaffMemberMessages.selectStaffColumns();%>
                         <datalist id = "subjectNames">
-                    <%while(RS1.next())
-                        {%>
-                        <option value=<%= RS1.getString("subjectName")%> >
+                            <%
+                    ArrayList subjectNames = new ArrayList();
+                        while(RS1.next())
+                        {
+                            if(!subjectNames.contains( RS1.getString("subjectName")))
+                            {
+                                subjectNames.add((String)RS1.getString("subjectName"));
+                            }
+                        }
+                        for(int i = 0; i < subjectNames.size();i++){
+                            
+                    %>
+                        
+                        <option value=<%= subjectNames.get(i)%> >
                        <% }
+                        
+                       
                        daoViewStaffMemberMessages.closeConnection();
                        %>
                         </datalist>
@@ -220,13 +248,21 @@
                     <input list="From Time-To Time" placeholder="From Time-To Time "name="time" autofocus required /> 
                     <%
                         DaoOfficeHoursTable daoOfficeHoursTable = new DaoOfficeHoursTable();
+                        DaoFilteration daoFilteration  = new DaoFilteration();
                         RS1 = null;
-                        RS1 = daoOfficeHoursTable.selectAllData();%>
+                        RS1 = daoOfficeHoursTable.getSpecificSlots(staffMemberID);%>
                         <datalist id = "From Time-To Time">
-                    <%while(RS1.next())
-                        {%>
-                        <option value=<%= RS1.getString("fromTime")%>-<%=RS1.getString("toTime")%> >
+                            <%
+                            ArrayList Times = new ArrayList();
+                            Times = daoFilteration.filterTimes(RS1);
+                       
+                        for(int i = 0; i < Times.size();i++){
+                            
+                    %>
+                        
+                        <option value=<%= Times.get(i)%> >
                        <% }
+                    
                        daoOfficeHoursTable.closeConnection();
                        %>
                         </datalist>
@@ -234,11 +270,16 @@
                     <%
                          daoOfficeHoursTable = new DaoOfficeHoursTable();
                         RS1 = null;
-                        RS1 = daoOfficeHoursTable.selectAllData();%>
+                        RS1 = daoOfficeHoursTable.getSpecificSlots(staffMemberID);%>
                         <datalist id = "dates">
-                    <%while(RS1.next())
-                        {%>
-                        <option value=<%= RS1.getString("date")%> >
+                    <%ArrayList dates = new ArrayList();
+                            dates = daoFilteration.filterDates(RS1);
+                       
+                        for(int i = 0; i < dates.size();i++){
+                            
+                    %>
+                        
+                        <option value=<%= dates.get(i)%> >
                        <% }
                        daoOfficeHoursTable.closeConnection();
                        %>
