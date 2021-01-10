@@ -4,6 +4,7 @@
     Author     : ME
 --%>
 
+<%@page import="dao.DaoOfficeHoursTable"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="dao.DaoViewOfficeHoursReservations"%>
 <%@page import="dao.DaoViewStaffMemberMessages"%>
@@ -31,8 +32,32 @@
 
                 <div class="sep"></div>
                 <div class="inputs">
-                    <input type="text" placeholder="From Time-To Time "name="time" autofocus required /> <br>
-                    <input type="text" placeholder="Date"name="date" required/> <br>
+                    <input list="From Time-To Time" placeholder="From Time-To Time "name="time" autofocus required /> 
+                    <%
+                        DaoOfficeHoursTable daoOfficeHoursTable = new DaoOfficeHoursTable();
+                        ResultSet RS1 = null;
+                        RS1 = daoOfficeHoursTable.selectAllData();%>
+                        <datalist id = "From Time-To Time">
+                    <%while(RS1.next())
+                        {%>
+                        <option value=<%= RS1.getString("fromTime")%>-<%=RS1.getString("toTime")%> >
+                       <% }
+                       daoOfficeHoursTable.closeConnection();
+                       %>
+                        </datalist>
+                    <input list="dates" placeholder="Date "name="date" autofocus required /> 
+                    <%
+                         daoOfficeHoursTable = new DaoOfficeHoursTable();
+                        RS1 = null;
+                        RS1 = daoOfficeHoursTable.selectAllData();%>
+                        <datalist id = "dates">
+                    <%while(RS1.next())
+                        {%>
+                        <option value=<%= RS1.getString("date")%> >
+                       <% }
+                       daoOfficeHoursTable.closeConnection();
+                       %>
+                        </datalist> 
                     <input id="submit" name = "button1" type="submit" value="Cancel Reservations">
                 </div>
             </form>
@@ -52,7 +77,19 @@
 
                 <div class="sep"></div>
                 <div class="inputs">
-                    <input type="text" placeholder="Date"name="date" autofocus required/> <br>   
+                   <input list="dates" placeholder="Date "name="date" autofocus required /> 
+                    <%
+                       DaoOfficeHoursTable daoOfficeHoursTable = new DaoOfficeHoursTable();
+                        ResultSet RS1 = null;
+                        RS1 = daoOfficeHoursTable.selectAllData();%>
+                        <datalist id = "dates">
+                    <%while(RS1.next())
+                        {%>
+                        <option value=<%= RS1.getString("date")%> >
+                       <% }
+                       daoOfficeHoursTable.closeConnection();
+                       %>
+                        </datalist>    
                     <input id="submit" name = "button2" type="submit" value="Cancel Reservations">
                 </div>
             </form>
