@@ -11,7 +11,7 @@
                 {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
                     {
-                     /* document.getElementById("error1").hidden = false;*/
+                      document.getElementById("error1").hidden = false;
                      
                      /*
                      if(xmlhttp.responseText === "Done successfully")
@@ -21,6 +21,38 @@
                      */
                      
                       document.getElementById("error1").innerHTML = xmlhttp.responseText;
+                        
+                    }
+
+                };
+
+            }
+ function ajaxSlot()
+            {
+                
+                var fromTime = document.getElementById("fromTime").value;
+                var toTime = document.getElementById("toTime").value;
+                var date = document.getElementById("date").value;
+                alert(fromTime);
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.open("GET", "AjaxProcessSlot?fromTime=" + fromTime +"toTime="+toTime+"date="+date, true);
+                xmlhttp.send();
+
+                   
+                xmlhttp.onreadystatechange = function ()
+                {
+                    if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
+                    {
+                      document.getElementById("error3").hidden = false;
+                     
+                     /*
+                     if(xmlhttp.responseText === "Done successfully")
+                     {
+                         
+                     }
+                     */
+                     
+                      document.getElementById("error3").innerHTML = xmlhttp.responseText;
                         
                     }
 
