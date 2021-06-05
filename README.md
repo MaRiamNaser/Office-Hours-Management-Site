@@ -10,6 +10,7 @@
     Staff Member :- View and reply to students’ messages. Cancel slot reservations on a specific date or all the slots on a certain day
                Get notifications of messages and students’ reservation by email.
  # How you can run the project
+  - You should download the project .
   - You have any IDE for Java like netbeans and then install the libraries that exist in folder
   - You have My sql to run data base
   # Technologies that we use:-
